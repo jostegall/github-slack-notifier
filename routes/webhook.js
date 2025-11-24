@@ -15,12 +15,6 @@ function verifySignature (req) {
                      req.get('x-hub-signature-256') ||
                      req.get('X-Hub-Signature-256');
 
-    // Debug logging
-    console.log('🔍 Debug Info:');
-    console.log('Received signature:', signature);
-    console.log('Secret configured:', process.env.WEBHOOK_SECRET ? 'YES' : 'NO');
-    console.log('Secret length:', process.env.WEBHOOK_SECRET?.length);
-
     // if no signature, reject (unless we're in development)
     if (!signature) {
         console.warn('No signature provided');
@@ -37,10 +31,6 @@ function verifySignature (req) {
     const hmac = crypto.createHmac('sha256', process.env.WEBHOOK_SECRET);
     const digest = 'sha256=' + hmac.update(JSON.stringify(req.body)).digest('hex');
 
-    // Debug: show what we calculated
-    console.log('Expected signature:', digest);
-    console.log('Signatures match:', signature === digest);
-
     // Compare signatures (timing-safe comparison)
     try {
         return crypto.timingSafeEqual(
@@ -53,9 +43,6 @@ function verifySignature (req) {
 };
 
 router.post('/github', async (req, res) => {
-    // Log All headers to see what we're receiving
-    console.log('All headers:', JSON.stringify(req.headers, null, 2));
-
     // verify signature first
     if (!verifySignature(req)) {
         console.error('Invalid signature - webhook rejected');
@@ -101,7 +88,7 @@ router.post('/github', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error procesiong webhook:', error);
+        console.error('Error processing webhook:', error);
         return res.status(500).json({
             error: 'Internal server error',
             message: error.message
