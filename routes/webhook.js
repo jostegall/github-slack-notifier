@@ -53,9 +53,11 @@ router.post('/github', async (req, res) => {
 
             case 'pull_request':
                 msg = formatPullEvent(payload);
+                break;
 
             case 'issues':
                 msg = formatIssuesEvent(payload);
+                break;
 
             default:
                 console.log(`Unhandled event type: ${eventType}`);
