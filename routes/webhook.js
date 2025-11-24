@@ -51,7 +51,7 @@ router.post('/github', async (req, res) => {
                 msg = formatPushEvent(payload);
                 break;
 
-            case 'pull_requrest':
+            case 'pull_request':
                 msg = formatPullEvent(payload);
 
             case 'issues':
