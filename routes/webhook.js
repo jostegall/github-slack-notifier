@@ -13,9 +13,16 @@ function verifySignature (req) {
     // Get the signature from Github
     const signature = req.headers['x-hun-signature-256'];
 
+    // Debug logging
+    console.log('🔍 Debug Info:');
+    console.log('Received signature:', signature);
+    console.log('Secret configured:', process.env.WEBHOOK_SECRET ? 'YES' : 'NO');
+    console.log('Secret length:', process.env.WEBHOOK_SECRET?.length);
+
     // if no signature, reject (unless we're in development)
-    if (!signature && process.env.NODE_ENV === 'production') {
-        return false;
+    if (!signature) {
+        console.warn('No signature provided');
+        return process.env.NODE_ENV !== 'production';
     }
 
     // If no secret configure, skip verification
@@ -27,6 +34,10 @@ function verifySignature (req) {
     // Create our own signature using the secret
     const hmac = crypto.createHmac('sha256', process.env.WEBHOOK_SECRET);
     const digest = 'sha256=' + hmac.update(JSON.stringify(req.body)).digest('hex');
+
+    // Debug: show what we calculated
+    console.log('Expected signature:', digest);
+    console.log('Signatures match:', signature === digest);
 
     // Compare signatures (timing-safe comparison)
     try {
