@@ -51,6 +51,9 @@ function verifySignature (req) {
 };
 
 router.post('/github', async (req, res) => {
+    // Log All headers to see what we're receiving
+    console.log('All headers:', JSON.stringify(req.headers, null, 2));
+
     // verify signature first
     if (!verifySignature(req)) {
         console.error('Invalid signature - webhook rejected');
