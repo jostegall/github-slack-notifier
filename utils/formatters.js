@@ -32,11 +32,15 @@ function formatPushEvent(payload) {
             },
             {
                 type: "actions",
-                text: {
-                    type: "plain_text",
-                    text: "View Commits"
-                },
-                url: compare
+                elements: [
+                    {
+                        text: {
+                            type: "plain_text",
+                            text: "View Commits"
+                        },
+                        url: compare
+                    }
+                ]
             }
         ]
     };
