@@ -10,8 +10,10 @@ const {
 
 // Verify that the webhook request came from Github
 function verifySignature (req) {
-    // Get the signature from Github
-    const signature = req.headers['x-hun-signature-256'];
+    // Try multiple ways to get the signature
+    const signature = req.headers['x-hub-signature-256'] || 
+                     req.get('x-hub-signature-256') ||
+                     req.get('X-Hub-Signature-256');
 
     // Debug logging
     console.log('🔍 Debug Info:');
