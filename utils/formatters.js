@@ -1,20 +1,20 @@
 
 function formatPushEvent(payload) {
     // Destructure to get the parts we need
-    const { repository, pusher, commits, ref, compare} = payload;
+    const { repository, pusher, commits, ref, compare } = payload;
 
     // Extract branch name
     const branch = ref.split('/').pop();
 
     // Get first 3 commits
-    const commitList = commits.slice(0, 30).map(commit => {
+    const commitList = commits.slice(0, 3).map(commit => {
         // Extract just the first line of the commit message
         const message = commit.message.split('\n')[0];
         return `• ${message}`;
     }).join('\n');
     
     return {
-        text: `New push to ${repository.name}`, // Fallback text
+        text: `New push to ${repository.name}`,
         blocks: [
             {
                 type: "section",
@@ -34,6 +34,7 @@ function formatPushEvent(payload) {
                 type: "actions",
                 elements: [
                     {
+                        type: "button",
                         text: {
                             type: "plain_text",
                             text: "View Commits"
