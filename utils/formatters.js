@@ -89,11 +89,53 @@ function formatPullEvent(payload) {
     };
 };
 
-function formatIssueEvent(payload) {
-    return;
+function formatIssuesEvent(payload) {
+    // Extract the data we need
+    const { action, issue, repository } = payload;
+    const { title, user, html_url, number } = issue;
+
+    // Determin the emoji based on action
+    const emojiMap = {
+        'opened': '🐛',
+        'closed': '✔️',
+        'reopened': '🔄'
+    };
+
+    const emoji = emojiMap[action] || '📝';
+
+    // Create descriptive action text
+    const actionText = `${action} an issue`;
+    
+    // Build and return the Slack message
+    return {
+        text: `${emoji} Issue ${action}`,
+        blocks: [
+            {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `${emoji} *Issue ${action}*\n\n*${user.login}* ${actionText} in *${repository.name}*\n\n*${title}*\n\n#${number}`
+                }
+            },
+            {
+                type: "actions",
+                elements: [
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: "View Issue"
+                        },
+                        url: html_url
+                    }
+                ]
+            }
+        ]
+    };
 };
 
 module.exports = {
     formatPushEvent,
     formatPullEvent,
+    formatIssuesEvent
 };

@@ -3,3 +3,7 @@
 
 # Ignore secrets
 .env
+
+# Ignore others
+.DS_Store
+*.log

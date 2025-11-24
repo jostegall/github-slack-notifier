@@ -3,12 +3,7 @@ const axios = require('axios');
 
 async function sendToSlack(msg) {
     try {
-        const res = await axios.post(
-            process.env.SLACK_WEBHOOK_URL,
-            {
-                text: msg
-            }
-        );
+        const res = await axios.post(process.env.SLACK_WEBHOOK_URL, msg);
         console.log('Message sent to Slack Successfully');
         return res;
     } catch (error) {

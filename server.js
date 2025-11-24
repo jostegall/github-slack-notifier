@@ -1,33 +1,28 @@
 require('dotenv').config(); // Load .env variables
 const express = require('express');
 const app = express()
-const webhookRoutes = require('./routes/webhook');
 const { sendToSlack } = require('./services/slackService');
 
 
-// Add middleware
+// Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
 
-// Add routes
-app.use('/webhook', webhookRoutes);
-
-// Health check route
+// Health check endpoint
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date() });
+    res.json({ 
+        status: 'ok', 
+        timestamp: new Date() 
+    });
 });
 
-// Test route for Slack messages
-app.get('/test-slack', async (req, res) => {
-    try {
-        await sendToSlack('Test message from my app!');
-        res.json({ success: true, message: 'Check your Slack channel!' });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
+// Mount webhook routes
+const webhookRoutes = require('./routes/webhook');
+app.use('/webhook', webhookRoutes);
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Environent: ${process.env.NODE_ENV || 'development'}`);
 });
